@@ -1,0 +1,68 @@
+
+#import "ATTabBarController.h"
+#import "ATMySelfCenterController.h"
+#import "ATCreditorController.h"
+#import "ATInvestController.h"
+#import "ATTradeController.h"
+#import "ATNavigationController.h"
+
+@implementation ATTabBarController
+
+
+/**
+ *  添加一个控制器进入TabBarController
+ *  @param controller        要添加的子控制器
+ *  @param title             导航栏标题
+ *  @param imageName         普通图片名称
+ *  @param selectedImageName 高亮图片名称
+ */
+- (void) addOneChildController:(UIViewController *)controller title:(NSString *)title imageName:(NSString *)imageName
+             selectedImageName:(NSString *)selectedImageName
+{
+    controller.title = title;
+    controller.tabBarItem.image = [UIImage imageNamed:imageName];
+    UIImage *selectedImage =  [UIImage imageNamed:selectedImageName];
+     
+    //设置图片不渲染使用原始传入图片（在ios7中默认会渲染图片显示选中时蓝色背景）
+    if (iOS7){
+        selectedImage =  [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
+    controller.tabBarItem.selectedImage = selectedImage;
+    
+    ATNavigationController *nav = [[ATNavigationController alloc] initWithRootViewController:controller];
+    //个人中心不包装导航控制器
+    if ([title isEqualToString:@"个人中心"]) {
+        [self addChildViewController:nav];
+        return;
+    }
+    //子控制器包装导航控制器添加进入
+//    ATNavigationController *nav = [[ATNavigationController alloc] initWithRootViewController:controller];
+    [self addChildViewController:nav];
+}
+
+- (void)viewDidLoad
+{
+    //设置Dock的背景
+    self.tabBar.backgroundImage = [UIImage imageNamed:@"dock"];
+    self.tabBar.tintColor = [UIColor whiteColor];
+    
+    //添加所有子控制器
+    [self addAllChildController];
+}
+
+- (void) addAllChildController
+{
+    ATInvestController *home = [[ATInvestController alloc] init];
+    [self addOneChildController:home title:@"我要投资" imageName:@"tab_invest" selectedImageName:@"wytz_hover"];
+    
+    ATTradeController *message = [[ATTradeController alloc] init];
+    [self addOneChildController:message title:@"我要融资" imageName:@"tab_loan" selectedImageName:@"wyrz_hover"];
+    
+    ATCreditorController *discover = [[ATCreditorController alloc] init];
+    [self addOneChildController:discover title:@"债权转让" imageName:@"tab_transfer" selectedImageName:@"zqzr_hover"];
+    
+    ATMySelfCenterController *me = [[ATMySelfCenterController alloc] init];
+    [self addOneChildController:me title:@"个人中心" imageName:@"tab_persion" selectedImageName:@"grzx_hover"];
+}
+
+@end

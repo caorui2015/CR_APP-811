@@ -1,0 +1,10 @@
+/*
+    控制全局导航栏
+ 2015年04月09日
+ */
+
+#import <UIKit/UIKit.h>
+
+@interface ATNavigationController : UINavigationController
+
+@end

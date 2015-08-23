@@ -1,0 +1,23 @@
+//
+//  BirthdayPickerVIew.h
+//  UiPicker
+//
+//  Created by ATBJB15 on 15/3/27.
+//  Copyright (c) 2015年 AT. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface FamilyPickerVIew : UIView<UIPickerViewDataSource,UIPickerViewDelegate>
+{
+    NSArray *_nameArray;
+}
+
+@property (nonatomic,strong) UIPickerView *picker;
+
++ (void)exChangeOut:(UIView *)changeOutView dur:(CFTimeInterval)dur;
+
+//定义一个block传出选中的数据
+@property (nonatomic,copy) void (^operation)(NSString *temp);
+
+@end

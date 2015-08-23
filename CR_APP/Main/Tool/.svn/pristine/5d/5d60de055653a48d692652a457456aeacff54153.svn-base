@@ -1,0 +1,138 @@
+//
+//  BirthdayPickerVIew.m
+//  UiPicker
+//
+//  Created by ATBJB15 on 15/3/27.
+//  Copyright (c) 2015年 AT. All rights reserved.
+//
+
+#import "BankPickerVIew.h"
+
+@interface BankPickerVIew()
+{
+    UIView *_chooseView;
+}
+@end
+
+@implementation BankPickerVIew
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        self.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.5];
+        _chooseView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        
+        UILabel *title_label = [[UILabel alloc]initWithFrame:CGRectMake(0, _chooseView.frame.size.height/2-162, _chooseView.frame.size.width, 35)];
+        title_label.text = @"选择银行";
+        title_label.textAlignment = NSTextAlignmentCenter;
+        title_label.textColor = [UIColor blackColor];
+        title_label.backgroundColor =[UIColor whiteColor];
+        title_label.font = [UIFont systemFontOfSize:15];
+        [title_label.layer setBorderWidth:1.0];
+        [_chooseView addSubview:title_label];
+
+        
+        self.picker = [[UIPickerView alloc] initWithFrame:
+                       CGRectMake(0,_chooseView.frame.size.height/2-127, _chooseView.frame.size.width, 162)];
+        self.picker.backgroundColor = [UIColor whiteColor];
+        self.picker.delegate = self;
+        self.picker.dataSource = self;
+        [_chooseView addSubview:self.picker];
+        [self.picker reloadAllComponents];
+        _nameArray = [NSArray arrayWithObjects:@"中国工商银行",@"中国农业银行",@"中国银行",@"中国建设银行",@"交通银行",@"招商银行",@"兴业银行",@"中国光大银行",@"中国民生银行",@"广东发展银行",@"深圳发展银行",@"上海浦东发展银行",@"华夏银行",@"中信实业银行",@"其他农村信用合作社",@"其他城市商业银行",@"中国农业发展银行",@"江阴市农村商业银行股份有限公司",@"恒丰银行",@"国家邮政局邮政储汇局",@"澳门地区中国银行澳门分行",@"香港地区渣打银行",@"深圳平安银行",@"浙商银行股份有限公司",@"渤海银行股份有限公司",@"东亚银行(中国)有限公司",@"徽商银行",@"江苏连云港东方农村合作银行",@"上海农村商业银行",@"村镇银行",@"重庆三峡银行股份有限公司",@"城市信用社",@"汇丰银行",@"南洋商业银行",@"恒生银行",@"中国银行（香港）",@"集友银行",@"创兴银行",@"星展银行",@"永亨银行",@"中信银行",@"花旗银行",@"美国银行",@"摩根大通银行",@"美国建东银行",@"三菱东京日联银行",@"日本日联银行",@"三井住友银行",@"瑞穗实业银行",@"日本山口银行",@"外换银行",@"韩国新韩银行",@"友利银行",@"韩国产业银行",@"新韩银行",@"企业银行",@"韩亚银行",@"首都银行",@"华侨银行",@"大华银行",@"星展银行",@"盘谷银行",@"奥地利奥合国际银行",@"比利时联合银行",@"比利时富通银行",@"荷兰银行",@"荷兰安智银行",@"英国苏格兰皇家银行",@"永隆银行",@"瑞典商业银行",@"瑞典北欧斯安银行",@"法国兴业银行",@"法国巴黎银行",@"东方汇理银行",@"法国外贸银行",@"德国德累斯登银行",@"德意志银行",@"德国商业银行",@"德国西德银行",@"德国巴伐利亚州银行",@"德国北德意志州银行",@"中德住房储蓄银行",@"意大利联合圣保罗银行",@"瑞士信贷银行",@"瑞士银行",@"加拿大丰业银行",@"蒙特利尔银行",@"澳大利亚和新西兰银行",@"摩根士丹利国际银行",@"华美银行",@"荷兰合作银行",@"厦门国际银行",@"法国巴黎银行",@"韩亚银行",@"华一银行", nil];
+
+        UIButton *OKBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [OKBtn setBackgroundColor:[UIColor clearColor]];
+        [OKBtn addTarget:self action:@selector(OKBtnFunc) forControlEvents:UIControlEventTouchUpInside];
+        [OKBtn setTitle:@"确定" forState:UIControlStateNormal];
+        [OKBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [OKBtn setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
+        OKBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
+        [OKBtn setFrame:CGRectMake(0
+                                   , CGRectGetMaxY(self.picker.frame)
+                                   ,ATGetDeviceWidth,40)];
+        OKBtn.backgroundColor = [UIColor whiteColor];
+        [OKBtn.layer setBorderWidth:1.0];
+        [_chooseView addSubview:OKBtn];
+        
+//        NSLog(@"%@-----",NSStringFromCGRect(OKBtn.frame));
+        
+        [self addSubview:_chooseView];
+    }
+    return self;
+}
+
+- (void) OKBtnFunc
+{
+  self.hidden = YES;
+}
+
+//返回有几列
+- (NSInteger) numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return  1;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return _nameArray.count;
+}
+
+- (CGFloat) pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    return 20;
+}
+
+- (CGFloat) pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+{
+    if (component==0){
+        return _chooseView.frame.size.width;
+    }else{
+        return _chooseView.frame.size.width;
+    }
+}
+
+//自定义指定列的每行的视图
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    if (!view) {
+        view  =[[UIView alloc] init];
+    }
+    UILabel *text = [[UILabel alloc] initWithFrame:
+                     CGRectMake(0, 0, _chooseView.frame.size.width, 20)];
+    text.textAlignment = NSTextAlignmentCenter;
+    text.text = [_nameArray objectAtIndex:row];
+    [view addSubview:text];
+    return view;
+}
+
+//被选择的行
+- (void) pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+//    if (self.operation){
+    
+    //通过Block对外传出选中行数据
+        self.operation([_nameArray objectAtIndex:row]);
+//    }
+}
+
++ (void)exChangeOut:(UIView *)changeOutView dur:(CFTimeInterval)dur{
+    
+    CAKeyframeAnimation * animation;
+    animation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    animation.duration = dur;
+    animation.removedOnCompletion = NO;
+    animation.fillMode = kCAFillModeForwards;
+    NSMutableArray *values = [NSMutableArray array];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.1, 0.1, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.2, 1.2, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.9, 0.9, 0.9)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
+    animation.values = values;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName: @"easeInEaseOut"];
+    [changeOutView.layer addAnimation:animation forKey:nil];
+}
+
+@end

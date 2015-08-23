@@ -1,0 +1,127 @@
+//
+//  Header.pch
+//  CR_APP
+//
+//  Created by Itachi on 15/7/10.
+//  Copyright (c) 2015年 Itachi. All rights reserved.
+//
+
+#ifndef CR_APP_Header_pch
+#define CR_APP_Header_pch
+
+#import <UIKit/UIKit.h>
+#import "MKNetworkKit.h"
+#import "EngineTools.h"
+#import "ContentView.h"
+#import "NSData+AES256.h"
+#import "Operation.h"
+
+/************************************************************************************/
+
+#define APPDefualts [NSUserDefaults standardUserDefaults]
+#define USER @"user"
+#define enginer [[MKNetworkEngine alloc] initWithHostName:host_url]
+#define JSON completedOperation.responseJSON
+/************************************************************************************/
+
+
+#define Login [APPDefualts setValue:@"YES" forKey:@"Login"];
+
+#define LogOff [APPDefualts removeObjectForKey:@"Login"]; \
+[APPDefualts setValue:@"NO" forKey:@"Login"];\
+[APPDefualts synchronize];\
+
+#define CheckLogIn [[APPDefualts valueForKey:@"Login"] isEqualToString:@"YES"]
+
+
+
+
+
+/************************************************************************************/
+
+#define MAIN_VIEW_TAG 1
+#define TITLE_LABLE_TAG 2
+#define IMAGE_VIEW_TAG 3
+
+#pragma mark - 主题颜色
+#define ThemeRed [UIColor colorWithRed:215/255.0 green:19/255.0 blue:17/255.0 alpha:1]
+#define ThemeBlue [UIColor colorWithRed:28/255.0 green:160/255.0 blue:238/255.0 alpha:1]
+
+/************************************************************************************/
+
+#pragma mark -  是否为iOS7及以上系统
+#define iOS7 ([[UIDevice currentDevice].systemVersion doubleValue] >= 7.0)
+#define iOSVersion [[UIDevice currentDevice].systemVersion doubleValue]
+
+/************************************************************************************/
+
+#pragma mark -  弹出对话框
+#define ATSHOW_ALERT(_message_) UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:_message_ delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil]; \
+[alert show]; \
+
+#define ERROR_InterNet UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"连接网络失败，请检查您的网络状态!" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil]; \
+[alert show]; \
+
+
+#define ATSHOW_ALERT_2(_message_) UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:_message_ delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是", nil]; \
+[alert show]; \
+
+
+#define HideProcessView [MBProgressHUD hideHUD];
+
+/************************************************************************************/
+
+#pragma mark -  获取设备宽度
+#define ATGetDeviceWidth ([UIScreen mainScreen].bounds.size.width)
+
+#pragma mark -  获取设备高度
+#define ATGetDeviceHeight ([UIScreen mainScreen].bounds.size.height)
+
+
+/************************************************************************************/
+
+#pragma mark -  打印日志
+#ifdef DEBUG // 调试状态, 打开LOG功能
+#define ATLog(...) NSLog(__VA_ARGS__)
+#else // 发布状态, 关闭LOG功能
+#define ATLog(...)
+#endif
+
+/************************************************************************************/
+
+
+#pragma mark - URL
+#define host_url @"36.33.24.175:6019"
+
+//#define host_url @"192.168.3.216:8658"
+
+#define index_url                   @"" //主页
+
+#define inverst_url                 @"/mobileIos/loanRequest.json" //投资主页
+
+#define loanapply_url               @"" //融资主页
+
+#define transfer_url                @"" //转让主页
+
+#define account_manage_url          @"" //账号管理
+
+#define loan_manage_url             @"" //融资管理
+
+#define invest_manage_url           @"" //投资管理
+
+#define transfer_manage_url         @"" //债权转让管理
+
+#define register_url                @"" //注册
+
+#define login_url                   @"/mobile/login.json" //登录
+
+//#define logout_url                  @"" //注销
+
+#define other_url                   @"" //其他
+
+
+
+
+
+
+#endif

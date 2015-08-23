@@ -1,0 +1,201 @@
+//
+//  BirthdayPickerVIew.m
+//  UiPicker
+//
+//  Created by ATBJB15 on 15/3/27.
+//  Copyright (c) 2015年 AT. All rights reserved.
+//
+
+#import "CityPickerVIew.h"
+
+#define FirstComponent 0
+#define SubComponent 1
+#define ThirdComponent 2
+
+@interface CityPickerVIew()
+{
+    UIView *_chooseView;
+    NSDictionary* _dict;
+    NSArray* _pickerArray;
+    NSArray* _subPickerArray;
+    NSArray* _selectArray;
+    
+    //记录位置
+    NSInteger proviceIndex;
+    NSInteger cityIndex;
+    
+    NSMutableArray *dictt;
+}
+@end
+
+@implementation CityPickerVIew
+
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        NSString* plistPath=[[NSBundle mainBundle] pathForResource:@"Address" ofType:@"plist"];
+        _dict=[[NSDictionary alloc] initWithContentsOfFile:plistPath];
+        _pickerArray=[_dict allKeys];
+        _selectArray=[_dict objectForKey:[[_dict allKeys] objectAtIndex:0]];
+        if ([_selectArray count]>0) {
+            _subPickerArray= [[_selectArray objectAtIndex:0] allKeys];
+        }
+        
+        self.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.5];
+        _chooseView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        
+        UILabel *title_label = [[UILabel alloc]initWithFrame:CGRectMake(0, _chooseView.frame.size.height/2-162, _chooseView.frame.size.width, 35)];
+        title_label.text = @"选择地址";
+        title_label.textAlignment = NSTextAlignmentCenter;
+        title_label.textColor = [UIColor blackColor];
+        title_label.backgroundColor =[UIColor whiteColor];
+        title_label.font = [UIFont systemFontOfSize:15];
+        [title_label.layer setBorderWidth:1.0];
+        [_chooseView addSubview:title_label];
+
+        
+        self.picker = [[UIPickerView alloc] initWithFrame:
+                       CGRectMake(0,_chooseView.frame.size.height/2-127, _chooseView.frame.size.width, 162)];
+        self.picker.backgroundColor = [UIColor whiteColor];
+        self.picker.delegate = self;
+        self.picker.dataSource = self;
+        [_chooseView addSubview:self.picker];
+        [self.picker reloadAllComponents];
+        
+                
+    UIButton *OKBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [OKBtn setBackgroundColor:[UIColor clearColor]];
+    [OKBtn addTarget:self action:@selector(OKBtnFunc) forControlEvents:UIControlEventTouchUpInside];
+    [OKBtn setTitle:@"确  定" forState:UIControlStateNormal];
+    [OKBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [OKBtn setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
+    OKBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
+    [OKBtn setFrame:CGRectMake(0, CGRectGetMaxY(self.picker.frame),_chooseView.frame.size.width,50)];
+    OKBtn.backgroundColor = [UIColor whiteColor];
+    [OKBtn.layer setBorderWidth:1.0];
+    [_chooseView addSubview:OKBtn];
+    [self addSubview:_chooseView];
+    }
+    return self;
+}
+
+- (void) OKBtnFunc
+{
+  self.hidden = YES;
+}
+
+//返回有几列
+- (NSInteger) numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return  2;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    if (component==FirstComponent) {
+        return [_pickerArray count];
+    }
+    if (component==SubComponent) {
+        return [_subPickerArray count];
+    }
+
+    return 0;
+}
+
+- (CGFloat) pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
+{
+    if (component==FirstComponent) {
+        return 120.0;
+    }
+    if (component==SubComponent) {
+        return 120.0;
+    }
+    return 0;
+}
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    if (component==FirstComponent) {
+        return [_pickerArray objectAtIndex:row];
+    }
+    if (component==SubComponent) {
+        return [_subPickerArray objectAtIndex:row];
+    }
+
+    return nil;
+}
+
+//自定义指定列的每行的视图
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    if (component==0){
+        if (!view) {
+            view  =[[UIView alloc] init];
+        }
+        UILabel *text = [[UILabel alloc] initWithFrame:
+                         CGRectMake(0, 0, _chooseView.frame.size.width/3+30, 20)];
+        text.textAlignment = NSTextAlignmentCenter;
+        text.text = _pickerArray[row];
+        [view addSubview:text];
+    }else if (component==1){
+        if (!view) {
+            view  =[[UIView alloc] init];
+        }
+        UILabel *text = [[UILabel alloc] initWithFrame:
+                         CGRectMake(-20, 0, _chooseView.frame.size.width/3+70, 20)];
+        text.textAlignment = NSTextAlignmentCenter;
+        text.text = _subPickerArray[row];
+        [view addSubview:text];
+    }
+    return view;
+}
+
+//被选择的行
+- (void) pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if (component==0) {
+        proviceIndex = row;
+    }
+    if (component==1){
+        cityIndex = row;
+    }
+    
+    if (component==0) {
+        _selectArray=[_dict objectForKey:[_pickerArray objectAtIndex:row]];
+        if ([_selectArray count]>0) {
+            _subPickerArray= [[_selectArray objectAtIndex:0] allKeys];
+        }else{
+            _subPickerArray=nil;
+        }
+        [self.picker selectedRowInComponent:1];
+        [self.picker reloadComponent:1];
+//        [self.picker selectedRowInComponent:2];
+    }
+   
+    if ((proviceIndex>_pickerArray.count) || (cityIndex>_subPickerArray.count))return;
+    
+    NSString *address =  [NSString stringWithFormat:@"%@%@", [_pickerArray objectAtIndex:proviceIndex],
+                          [_subPickerArray objectAtIndex:cityIndex]];
+    self.operation(address);
+}
+
++ (void)exChangeOut:(UIView *)changeOutView dur:(CFTimeInterval)dur{
+    
+    CAKeyframeAnimation * animation;
+    animation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    animation.duration = dur;
+    animation.removedOnCompletion = NO;
+    animation.fillMode = kCAFillModeForwards;
+    NSMutableArray *values = [NSMutableArray array];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.1, 0.1, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.2, 1.2, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.9, 0.9, 0.9)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
+    animation.values = values;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName: @"easeInEaseOut"];
+    [changeOutView.layer addAnimation:animation forKey:nil];
+}
+
+@end
